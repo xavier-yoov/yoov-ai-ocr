@@ -1,0 +1,12 @@
+{
+  "apps": [
+    {
+      "name": "ai-ocr:8086",
+      "script": "node dist/server.js",
+      "watch": false,
+      "max_memory_restart": "256M",
+      "kill_timeout": 5000,
+      "restartDelay": 5000
+    }
+  ]
+}
