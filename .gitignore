@@ -11,6 +11,7 @@ yarn-error.log*
 /.pnp
 .pnp.js
 .env
+config.json
 
 .idea
 .vscode/*
