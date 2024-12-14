@@ -39,6 +39,10 @@ app.use(express.urlencoded({extended: true}));
 app.use(cors(corsConfig));
 app.use(morgan('combined'));
 
+app.get("/health", (req, res) => {
+  res.json({status: "ok"});
+})
+
 app.post('/ocr', upload.array('files'), async (req, res) => {
 
     const files = req.files as Express.Multer.File[];
