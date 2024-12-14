@@ -15,7 +15,9 @@ export function getGreetingEmailInstruction(senderInfo:UserInfo, recipientData:a
     Recipient Last Name: ${recipientData["Last Name"]}
     Recipient Company Name: ${recipientData["Company Name"]}
     Recipient Job Title: ${recipientData["Job Title"]}
-       `
+    
+    The sender have just exchange business card with the recipient at a offline meetup. The email intend to establish a business relationship.
+    `
 
 }
 

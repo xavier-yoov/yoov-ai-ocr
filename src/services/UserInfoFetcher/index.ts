@@ -10,9 +10,9 @@ export type UserInfo = {
 
 export class UserInfoFetcher{
     fetch(userId: string): Promise<UserInfo>{
-       if(userId !== "sg204"){
-       throw  new Error("User not found")
-       }
+       // if(userId !== "sg204"){
+       // throw  new Error("User not found")
+       // }
          return Promise.resolve({
              FirstName: "Johnny",
              LastName: "Lee",

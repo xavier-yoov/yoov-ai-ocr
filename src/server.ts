@@ -153,7 +153,6 @@ app.post('/ocr', upload.array('files'), async (req, res) => {
 
                 if(htmlEmailContent){
 
-
                     console.log('htmlEmailContent: ',htmlEmailContent)
 
                     const dataManager = new YoovPlusDataManager({
