@@ -14,5 +14,10 @@ export const config = {
         ocr:{
             url: process.env.OCR_SERVICE_URL || 'http://localhost:5000'
         }
+    },
+    yoovPlus:{
+        app_key: process.env.YOOV_PLUS_APP_KEY || '',
+        app_sign: process.env.YOOV_PLUS_APP_SIGN || '',
+        worksheet_id: process.env.YOOV_PLUS_WORKSHEET_ID || ''
     }
 }

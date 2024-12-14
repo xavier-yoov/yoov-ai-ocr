@@ -8,6 +8,11 @@ import axios from "axios";
 import FormData from "form-data";
 import fs from "fs";
 import vCardsJS from 'vcards-js';
+import {EmailWriter} from "./services/EmailWriter";
+import {extractBodyHtml, getGreetingEmailInstruction} from "./services/EmailWriter/helpers";
+import {UserInfoFetcher} from "./services/UserInfoFetcher";
+import {userInfo} from "node:os";
+import {YoovPlusDataManager} from "./services/YoovPlusDataManager";
 
 const PORT = config.server.port
 
@@ -47,6 +52,8 @@ app.post('/ocr', upload.array('files'), async (req, res) => {
 
     const files = req.files as Express.Multer.File[];
 
+    const userId = req.query.userId as string;
+
     console.log("files", files);
 
     if (!files) {
@@ -76,13 +83,13 @@ app.post('/ocr', upload.array('files'), async (req, res) => {
                 ...formData.getHeaders()
             },
         })
-            .then(response => {
+            .then(async (response) => {
                 console.log("response", response.data);
 
                 const nameCardData = response.data;
                 let vCard = vCardsJS();
 
-// Set contact properties
+                // Set contact properties
                 vCard.firstName = nameCardData["First Name"];
                 vCard.lastName = nameCardData["Last Name"];
                 vCard.organization = nameCardData["Company Name"];
@@ -131,6 +138,47 @@ app.post('/ocr', upload.array('files'), async (req, res) => {
                 const vcfPath = `/vcfs/${file_name}.vcf`;
                 vCard.saveToFile('./public'+vcfPath);
                 res.json({url:config.server.host + vcfPath}); // Set disposition and send it.
+
+                const emailWriter = new EmailWriter()
+
+                const userInfoFetcher =new UserInfoFetcher()
+
+                const userInfo = await userInfoFetcher.fetch(userId);
+
+                const emailInstruction = getGreetingEmailInstruction(userInfo,nameCardData);
+
+                const emailContent =  await emailWriter.write(emailInstruction);
+
+                const htmlEmailContent = extractBodyHtml(emailContent)
+
+                if(htmlEmailContent){
+
+
+                    console.log('htmlEmailContent: ',htmlEmailContent)
+
+                    const dataManager = new YoovPlusDataManager({
+                        app_key: config.yoovPlus.app_key,
+                        app_sign: config.yoovPlus.app_sign,
+                        worksheet_id: config.yoovPlus.worksheet_id
+                    })
+
+                    const emailRecord = {
+                        subject: "Greeting from YOOV",
+                        html: htmlEmailContent.toString(),
+                        sender_name: `${userInfo.FirstName} ${userInfo.LastName}`,
+                        sender_email: userInfo.Email ?? "",
+                        recipient_email: nameCardData["Email Address"] ?? "",
+                    }
+
+                    dataManager.addRecord(emailRecord)
+                        .then((response) => {
+                            console.log("response", response.data);
+                        })
+                        .catch(error => {
+                            console.log("error", error);
+                        })
+
+                }
             })
             .catch(error => {
                 console.log("error", error);

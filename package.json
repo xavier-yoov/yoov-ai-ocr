@@ -16,7 +16,8 @@
     "morgan": "^1.10.0",
     "multer": "1.4.5-lts.1",
     "pdf-lib": "^1.17.1",
-    "vcards-js": "^2.10.0"
+    "vcards-js": "^2.10.0",
+    "yoov-llm-framework": "^0.1.17"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
